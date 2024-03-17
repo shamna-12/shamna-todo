@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue Todo App</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+  <div id="app">
+    <input type="text" v-model="newTodo.name" placeholder="Task Name">
+    <select v-model="newTodo.status">
+      <option value="Pending">Pending</option>
+      <option value="Completed">Completed</option>
+    </select>
+    <button @click="addTodo">Add Todo</button>
+    <ul>
+      <li v-for="(todo, index) in todos" :key="index">
+        <div v-if="!todo.editing">
+          <span>{{ todo.name }} - {{ todo.status }} - Created: {{ todo.createdAt }} - Updated: {{ todo.updatedAt }}</span>
+          <button @click="editTodo(index)">Edit</button>
+          <button @click="deleteTodo(index)">Delete</button>
+        </div>
+        <div v-else>
+          <input type="text" v-model="todo.name">
+          <select v-model="todo.status">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button @click="updateTodo(index)">Update</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        newTodo: {
+          name: '',
+          status: 'Pending',
+          createdAt: '',
+          updatedAt: ''
+        },
+        todos: []
+      },
+      methods: {
+        addTodo() {
+          if (this.newTodo.name.trim() !== '') {
+            this.newTodo.createdAt = new Date().toLocaleString();
+            this.newTodo.updatedAt = new Date().toLocaleString();
+            this.todos.push({...this.newTodo, editing: false});
+            this.newTodo.name = '';
+            this.newTodo.status = 'Pending';
+          }
+        },
+        deleteTodo(index) {
+          this.todos.splice(index, 1);
+        },
+        editTodo(index) {
+          this.todos[index].editing = true;
+        },
+        updateTodo(index) {
+          if (this.todos[index].name.trim() !== '') {
+            this.todos[index].updatedAt = new Date().toLocaleString();
+            this.todos[index].editing = false;
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
